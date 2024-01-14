@@ -7,6 +7,7 @@
 package tasks
 
 import (
+	"fmt"
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -64,6 +65,7 @@ func (c *tasksClient) Create(ctx context.Context, in *CreateTaskRequest, opts ..
 }
 
 func (c *tasksClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*StartResponse, error) {
+	fmt.Println("Lola: taskService PB start: ", in.String())
 	out := new(StartResponse)
 	err := c.cc.Invoke(ctx, "/containerd.services.tasks.v1.Tasks/Start", in, out, opts...)
 	if err != nil {

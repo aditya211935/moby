@@ -11,13 +11,17 @@ package pools // import "github.com/docker/docker/pkg/pools"
 
 import (
 	"bufio"
+	"context"
+	"fmt"
 	"io"
 	"sync"
+	"time"
 
+	"github.com/containerd/log"
 	"github.com/docker/docker/pkg/ioutils"
 )
 
-const buffer32K = 32 * 1024
+const buffer32K = 48
 
 var (
 	// BufioReader32KPool is a pool which returns bufio.Reader with a 32K buffer.
@@ -68,7 +72,12 @@ func newBufferPoolWithSize(size int) *bufferPool {
 }
 
 func (bp *bufferPool) Get() *[]byte {
-	return bp.pool.Get().(*[]byte)
+	buf := bp.pool.Get().(*[]byte)
+	for i := range *buf {
+		(*buf)[i] = 169
+	}
+
+	return buf
 }
 
 func (bp *bufferPool) Put(b *[]byte) {
@@ -77,8 +86,11 @@ func (bp *bufferPool) Put(b *[]byte) {
 
 // Copy is a convenience wrapper which uses a buffer to avoid allocation in io.Copy.
 func Copy(dst io.Writer, src io.Reader) (written int64, err error) {
+	currTime := time.Now()
 	buf := buffer32KPool.Get()
 	written, err = io.CopyBuffer(dst, src, *buf)
+	fmt.Println("Lola: copied", buf)
+	log.G(context.Background()).Infof("lola trying in Copy over: %v %v %d", written, err, time.Since(currTime).Milliseconds())
 	buffer32KPool.Put(buf)
 	return
 }

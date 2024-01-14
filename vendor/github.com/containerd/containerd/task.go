@@ -356,6 +356,7 @@ func (t *task) Exec(ctx context.Context, id string, spec *specs.Process, ioCreat
 	if id == "" {
 		return nil, fmt.Errorf("exec id must not be empty: %w", errdefs.ErrInvalidArgument)
 	}
+	fmt.Println("Lola: containerd Exec: ", id, spec.Args)
 	i, err := ioCreate(id)
 	if err != nil {
 		return nil, err

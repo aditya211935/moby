@@ -3,6 +3,7 @@ package remote // import "github.com/docker/docker/libcontainerd/remote"
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -276,6 +277,7 @@ func (t *task) Exec(ctx context.Context, processID string, spec *specs.Process, 
 		}
 	}()
 
+	fmt.Println("Lola: libcontainerd Exec: before Exec", processID)
 	p, err = t.Task.Exec(ctx, processID, spec, func(id string) (cio.IO, error) {
 		rio, err = t.ctr.createIO(fifos, stdinCloseSync, attachStdio)
 		return rio, err
@@ -287,7 +289,7 @@ func (t *task) Exec(ctx context.Context, processID string, spec *specs.Process, 
 		}
 		return nil, wrapError(err)
 	}
-
+	fmt.Println("Lola: libcontainerd Exec: shape of p", p.ID(), p.Pid())
 	// Signal c.createIO that it can call CloseIO
 	//
 	// the stdin of exec process will be created after p.Start in containerd

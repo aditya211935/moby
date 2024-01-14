@@ -159,6 +159,8 @@ func (daemon *Daemon) ContainerExecStart(ctx context.Context, name string, optio
 		return err
 	}
 
+	fmt.Println("Lola: ContainerExecStart", ec.Entrypoint, ec.Args)
+
 	ec.Lock()
 	if ec.ExitCode != nil {
 		ec.Unlock()
