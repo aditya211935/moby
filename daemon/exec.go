@@ -102,6 +102,7 @@ func (daemon *Daemon) ContainerExecCreate(name string, config *types.ExecConfig)
 
 	cmd := strslice.StrSlice(config.Cmd)
 	entrypoint, args := daemon.getEntrypointAndArgs(strslice.StrSlice{}, cmd)
+	fmt.Println("Lola: entrypoint", entrypoint, "args", args)
 
 	keys := []byte{}
 	if config.DetachKeys != "" {
